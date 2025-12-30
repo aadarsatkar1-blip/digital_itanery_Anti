@@ -1,28 +1,12 @@
 # itanery_app/admin.py
 
 from django.contrib import admin
-from django.contrib.admin.models import LogEntry  # ✅ ADD THIS LINE
 from django.utils.html import format_html
 import nested_admin
 from .models import (
     Customer, Hotel, Flight, Itinerary, ItineraryDetail,
     Video, PackageInclusion, PackageExclusion, WhatsAppConfig
 )
-
-
-# ============= DISABLE ADMIN LOGGING =============  # ✅ ADD THIS SECTION
-
-class NoLoggingMixin:
-    """Disable all admin action logging to save database space"""
-    
-    def log_addition(self, request, object, message):
-        pass
-    
-    def log_change(self, request, object, message):
-        pass
-    
-    def log_deletion(self, request, object, message):
-        pass
 
 
 # ============= NESTED INLINES =============
@@ -72,7 +56,7 @@ class HotelInline(nested_admin.NestedStackedInline):
 
 class FlightInline(nested_admin.NestedStackedInline):
     model = Flight
-    extra = 1
+    extra = 0
     can_delete = True
     
     fields = [
@@ -127,7 +111,7 @@ class WhatsAppConfigInline(nested_admin.NestedStackedInline):
 # ============= MAIN CUSTOMER ADMIN =============
 
 @admin.register(Customer)
-class CustomerAdmin(NoLoggingMixin, nested_admin.NestedModelAdmin):  # ✅ ADD NoLoggingMixin
+class CustomerAdmin(nested_admin.NestedModelAdmin):
     list_display = ['name', 'destination','slug', 'dates', 'guests', 'view_itinerary']
    
     search_fields = ['name', 'slug', 'destination', 'dates', 'guests']
@@ -159,14 +143,6 @@ class CustomerAdmin(NoLoggingMixin, nested_admin.NestedModelAdmin):  # ✅ ADD N
         url = f"/itinerary/{obj.slug}/"
         return format_html('<a href="{}" target="_blank" style="color: #0ea5e9; font-weight: bold;">🔗 View Live</a>', url)
     view_itinerary.short_description = 'Live Itinerary'
-
-
-# ============= HIDE LOG ENTRY FROM ADMIN =============  # ✅ ADD THIS SECTION
-
-try:
-    admin.site.unregister(LogEntry)
-except admin.sites.NotRegistered:
-    pass
 
 
 # ❌ NO OTHER ADMIN REGISTRATIONS

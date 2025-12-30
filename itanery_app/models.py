@@ -27,7 +27,10 @@ class Customer(models.Model):
             while Customer.objects.filter(slug=slug).exists():
                 slug = f"{base_slug}-{get_random_string(4).lower()}"
                 counter += 1
-                if counter > 10:  # Safety limit
+                if counter > 100:  # Increased safety limit
+                    # Fallback to a timestamp-based slug if really stuck
+                    import time
+                    slug = f"{base_slug}-{int(time.time())}"
                     break
             
             self.slug = slug
