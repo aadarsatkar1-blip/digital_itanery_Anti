@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.client.name }} - Travel Itinerary</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50">
+    <!-- Hero Section -->
+    <section class="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden bg-slate-50">
+        <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3787839/pexels-photo-3787839.jpeg?auto=compress&cs=tinysrgb&w=1600')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/85 to-white"></div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto px-4 py-16 text-center">
+            <p class="uppercase tracking-[0.3em] text-xs md:text-sm text-[#000000] mb-4">
+                Tailor-Made Luxury Journey
+            </p>
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-semibold mb-4 text-slate-900">
+                Welcome, <span class="text-black">{{ data.client.name }}</span>
+
+            </h1>
+            <p class="text-sm md:text-lg text-slate-700 mb-2">
+                {{ data.client.destination }}
+            </p>
+            <p class="text-sm md:text-lg text-slate-600 mb-6">
+                {{ data.client.dates }} &middot; {{ data.client.guests }}
+            </p>
+            <div class="inline-flex flex-wrap items-center justify-center gap-3 rounded-full bg-white px-5 py-3 border border-slate-200 shadow-md">
+                <span class="text-xs uppercase tracking-[0.2em] text-slate-500">
+                    Curated by Aadar Satkar Tour and Travels
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hotels Section -->
+    <section class="py-10 md:py-14 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between gap-4 mb-6 md:mb-8">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-900">
+                        Handpicked Hotel Selection
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Curated properties chosen for comfort, location, and service.
+                    </p>
+                </div>
+            </div>
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {% for hotel in data.hotels %}
+                <article class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-lg hover:border-slate-400 transition-transform">
+                    <div class="relative h-44 md:h-52 overflow-hidden">
+                        <img src="{{ hotel.image }}" alt="{{ hotel.name }}"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent"></div>
+            
+                        <!-- Nights badge -->
+                        <div class="absolute bottom-3 left-3 text-xs px-3 py-1 rounded-full bg-white/90 border border-slate-300 text-black">
+                            {{ hotel.nights }}
+                        </div>
+                    </div>
+            
+                    <div class="p-4 md:p-5 space-y-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <h3 class="text-base md:text-lg font-semibold text-slate-900">
+                                    {{ hotel.name }}
+                                </h3>
+                                <div class="text-xs text-slate-600 mt-1">
+                                    {{ hotel.roomType }}
+                                </div>
+                            </div>
+            
+                            <div class="text-right text-sm leading-tight">
+                                <div class="font-semibold text-black">{{ hotel.stars }}★</div>
+                                <div class="text-xs text-slate-500">Hotel Rating</div>
+                            </div>
+                        </div>
+            
+                        <!-- Stars -->
+                        <div class="flex items-center justify-between text-xs text-slate-600">
+                            <div class="flex items-center gap-1">
+                                {% for i in "12345" %}
+                                    <span class="{% if forloop.counter <= hotel.stars %}text-gold{% else %}text-slate-500{% endif %}">★</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+            
+                        <!-- Map Button -->
+                        <div class="pt-1">
+                            <a href="{{ hotel.mapUrl }}" target="_blank"
+                               class="inline-flex items-center justify-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400">
+                                <span>View Map</span>
+                                <span class="text-black">↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Flights Section -->
+    <section class="py-10 md:py-14 bg-slate-100 border-y border-slate-200">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-900">
+                        Flight Details
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Carefully planned timings for a seamless journey.
+                    </p>
+                </div>
+            </div>
+            <div class="grid gap-4 {% if flight_count == 1 %}md:grid-cols-1{% elif flight_count == 2 %}md:grid-cols-2{% else %}md:grid-cols-3{% endif %}">
+                {% if data.flights.departure %}
+                <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Departure</span>
+                        <span class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
+                            {{ data.flights.departure.cabin }}
+                        </span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold text-slate-900">
+                        {{ data.flights.departure.from }} &rarr; {{ data.flights.departure.to }}
+                    </div>
+                    <div class="text-xs text-slate-600">
+                        {{ data.flights.departure.date }} &middot; {{ data.flights.departure.time }}
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        {{ data.flights.departure.airline }} &middot; {{ data.flights.departure.flightNumber }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if data.flights.flight2 %}
+                <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Flight 2</span>
+                        <span class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
+                            {{ data.flights.flight2.cabin }}
+                        </span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold text-slate-900">
+                        {{ data.flights.flight2.from }} &rarr; {{ data.flights.flight2.to }}
+                    </div>
+                    <div class="text-xs text-slate-600">
+                        {{ data.flights.flight2.date }} &middot; {{ data.flights.flight2.time }}
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        {{ data.flights.flight2.airline }} &middot; {{ data.flights.flight2.flightNumber }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if data.flights.return %}
+                <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Return</span>
+                        <span class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
+                            {{ data.flights.return.cabin }}
+                        </span>
+                    </div>
+                    <div class="text-sm md:text-base font-semibold text-slate-900">
+                        {{ data.flights.return.from }} &rarr; {{ data.flights.return.to }}
+                    </div>
+                    <div class="text-xs text-slate-600">
+                        {{ data.flights.return.date }} &middot; {{ data.flights.return.time }}
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        {{ data.flights.return.airline }} &middot; {{ data.flights.return.flightNumber }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Itinerary Section -->
+    <section class="py-10 md:py-14 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 md:mb-8">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-900">
+                        Day-by-Day Itinerary
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1 max-w-2xl">
+                        A carefully balanced mix of must-see highlights and moments of pure relaxation.
+                        Tap on each day to see what is planned.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="space-y-2">
+                    {% for day in data.itinerary %}
+                    <div class="relative pl-8 md:pl-10 pb-8 {% if forloop.last %}last:pb-0{% endif %}">
+                        <!-- Connector line -->
+                        <div class="absolute left-3 top-3 bottom-0 md:left-4">
+                            <div class="h-full w-px bg-slate-300"></div>
+                        </div>
+
+                        <!-- Icon circle -->
+                        <div class="absolute left-0 top-1.5 md:left-0 flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-full bg-white border border-gold text-xs md:text-sm shadow-sm">
+                            <span>{{ day.icon|default:"📍" }}</span>
+                        </div>
+
+                        <button class="w-full text-left group itinerary-toggle" data-index="{{ forloop.counter0 }}">
+                            <div class="flex items-start justify-between gap-3 rounded-xl bg-white border border-slate-200 px-3 py-3 md:px-4 md:py-4 hover:border-gold/60 hover:bg-slate-50 transition-colors shadow-sm">
+                                <div>
+                                    <div class="text-[11px] uppercase tracking-[0.18em] text-gold mb-1">
+                                        Day {{ day.day }}
+                                    </div>
+                                    <h3 class="text-sm md:text-base font-semibold text-slate-900">
+                                        {{ day.title }}
+                                    </h3>
+                                    <p class="mt-1 text-xs md:text-sm text-slate-600 line-clamp-2">
+                                        {{ day.description }}
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-end gap-2">
+                                    <span class="inline-flex items-center justify-center rounded-full bg-slate-100 px-2 py-1 text-[10px] font-medium text-slate-700 border border-slate-200">
+                                        View Details
+                                    </span>
+                                    <span class="text-xs text-slate-500 toggle-arrow transition-transform">
+                                        ⌄
+                                    </span>
+                                </div>
+                            </div>
+                        </button>
+                        <div class="mt-2 ml-1 md:ml-2 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden max-h-0 opacity-0 transition-all duration-300 ease-out itinerary-content">
+                            <div class="px-3 py-3 md:px-4 md:py-4 space-y-2">
+                                {% for detail in day.details %}
+                                <div class="flex items-start gap-3 text-xs md:text-sm text-slate-700">
+                                    <span class="mt-0.5 min-w-[70px] text-[11px] uppercase tracking-[0.15em] text-gold">
+                                        {{ detail.time }}
+                                    </span>
+                                    <p class="flex-1 text-slate-700">
+                                        {{ detail.activity }}
+                                    </p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    {% if data.video and data.video.localSrc %}
+    <section class="py-10 md:py-14 bg-slate-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-semibold text-slate-900">
+                        {{ data.video.title|default:"Experience a Glimpse of Your Journey" }}
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        A short teaser to get you in the mood for your upcoming adventure.
+                    </p>
+                </div>
+            </div>
+            <div class="w-full mx-auto aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-black">
+                <video class="w-full h-full object-cover" autoplay muted loop playsinline controls preload="metadata">
+                    <source src="{{ data.video.localSrc }}" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Includes/Excludes Section -->
+    {% if data.includes or data.excludes %}
+    <section class="py-10 md:py-14 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="mb-6 md:mb-8">
+                <h2 class="text-xl md:text-2xl font-semibold text-slate-900">
+                    Package Details
+                </h2>
+                <p class="text-sm text-slate-600 mt-1">
+                    A clear breakdown of what is included and excluded in your itinerary.
+                </p>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2">
+                {% if data.includes %}
+                <div class="flex-1">
+                    <h3 class="text-lg md:text-xl font-semibold text-slate-900 mb-4">
+                        {{ data.includes.title|default:"What's Included" }}
+                    </h3>
+                    <div class="space-y-3">
+                        {% for item in data.includes.items %}
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors">
+                            <div class="flex-shrink-0 mt-0.5 w-6 h-6 rounded-full bg-emerald-50 border-emerald-200 border flex items-center justify-center">
+                                <span class="text-emerald-600 text-sm font-bold">✓</span>
+                            </div>
+                            <p class="text-sm md:text-base text-slate-700 flex-1">{{ item }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if data.excludes %}
+                <div class="flex-1">
+                    <h3 class="text-lg md:text-xl font-semibold text-slate-900 mb-4">
+                        {{ data.excludes.title|default:"What's Not Included" }}
+                    </h3>
+                    <div class="space-y-3">
+                        {% for item in data.excludes.items %}
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors">
+                            <div class="flex-shrink-0 mt-0.5 w-6 h-6 rounded-full bg-red-50 border-red-200 border flex items-center justify-center">
+                                <span class="text-red-600 text-sm font-bold">✗</span>
+                            </div>
+                            <p class="text-sm md:text-base text-slate-700 flex-1">{{ item }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white">
+        <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+            <div>
+                &copy; {{ current_year }} Your Travel Agency. All rights reserved.
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="h-px w-8 bg-slate-300 hidden md:block"></span>
+                <span>Digital Itinerary System</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp CTA (floating button) -->
+    {% if data.whatsapp and data.whatsapp.phone %}
+    <a href="https://wa.me/{{ data.whatsapp.phone }}?text={{ data.whatsapp.message|urlencode }} (Client: {{ data.client.name }}, Dates: {{ data.client.dates }})" 
+       target="_blank"
+       id="whatsapp-cta"
+       class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition-all z-50">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+    {% endif %}
+
+    <script>
+        // Itinerary toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.itinerary-toggle');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const arrow = this.querySelector('.toggle-arrow');
+                    const allContents = document.querySelectorAll('.itinerary-content');
+                    const allArrows = document.querySelectorAll('.toggle-arrow');
+                    
+                    // Close all other sections
+                    allContents.forEach(c => {
+                        if (c !== content) {
+                            c.style.maxHeight = '0px';
+                            c.style.opacity = '0';
+                        }
+                    });
+                    allArrows.forEach(a => {
+                        if (a !== arrow) {
+                            a.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                    
+                    // Toggle current section
+                    if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.opacity = '1';
+                        arrow.style.transform = 'rotate(180deg)';
+                    } else {
+                        content.style.maxHeight = '0px';
+                        content.style.opacity = '0';
+                        arrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

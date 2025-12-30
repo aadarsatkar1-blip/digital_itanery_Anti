@@ -1,0 +1,416 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* ============= GENERAL FORM STYLING ============= */
+    
+    .form-row {
+        margin-bottom: 20px;
+        clear: both;
+    }
+    
+    /* Full width inputs */
+    .form-row input[type="text"],
+    .form-row input[type="number"],
+    .form-row input[type="url"],
+    .form-row input[type="date"],
+    .form-row input[type="time"],
+    .form-row select,
+    .form-row textarea {
+        width: 100%;
+        max-width: 600px;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+    
+    /* Labels */
+    .form-row label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+    
+    /* Required field indicator */
+    .form-row.required label:after {
+        content: " *";
+        color: #dc3545;
+    }
+    
+    /* Help text */
+    .form-row .help,
+    .form-row .helptext {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+    }
+    
+    /* ============= INLINE FORMS (HOTELS, FLIGHTS, ETC) ============= */
+    
+    .inline-group {
+        margin-top: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .inline-related {
+        padding: 25px;
+        margin-bottom: 25px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        position: relative;
+    }
+    
+    .inline-related:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-color: #0ea5e9;
+    }
+    
+    /* Inline header */
+    .inline-related h3 {
+        margin: -25px -25px 25px -25px;
+        padding: 15px 25px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .inline-related h3 .inline-deletelink {
+        background: rgba(255,255,255,0.2);
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        transition: all 0.3s;
+    }
+    
+    .inline-related h3 .inline-deletelink:hover {
+        background: rgba(255,255,255,0.3);
+    }
+    
+    /* ============= SIDE-BY-SIDE FIELDS (STACKED INLINES) ============= */
+    
+    /* HOTELS: Room Type | Stars */
+    .inline-related:not(.tabular) .field-room_type,
+    .inline-related:not(.tabular) .field-stars {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        vertical-align: top;
+    }
+    
+    /* FLIGHT: FROM → TO LAYOUT */
+    .inline-related:not(.tabular) .field-from_location,
+    .inline-related:not(.tabular) .field-to_location {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        gap: 20%
+        vertical-align: top;
+        position: relative;
+    }
+    
+    
+    /* FLIGHT: DATE → TIME LAYOUT */
+    .inline-related:not(.tabular) .field-date,
+    .inline-related:not(.tabular) .field-time {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        vertical-align: top;
+        position: relative;
+    }
+    
+    
+    /* FLIGHT: AIRLINE | FLIGHT NUMBER LAYOUT */
+    .inline-related:not(.tabular) .field-airline,
+    .inline-related:not(.tabular) .field-flight_number {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        vertical-align: top;
+        position: relative;
+    }
+    
+    
+    /* ITINERARY: DAY | ICON LAYOUT */
+    .inline-related:not(.tabular) .field-day,
+    .inline-related:not(.tabular) .field-icon {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        vertical-align: top;
+    }
+    
+    /* ACTIVITY: TIME | ORDER LAYOUT */
+    .inline-related:not(.tabular) .field-time,
+    .inline-related:not(.tabular) .field-order {
+        display: inline-block;
+        width: 48%;
+        margin-right: 2%;
+        vertical-align: top;
+    }
+    
+    /* ============= NESTED INLINE STYLING ============= */
+    
+    .inline-group .inline-related .inline-related {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        padding: 20px;
+        border-left: 4px solid #0ea5e9;
+        border-radius: 6px;
+    }
+    
+    .inline-group .inline-related .inline-related h3 {
+        margin: -20px -20px 20px -20px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        color: white;
+        border-radius: 4px 4px 0 0;
+        font-size: 14px;
+    }
+    
+    /* ============= TABULAR INLINE PROPER TABLE LAYOUT ============= */
+    
+    /* Force proper table display */
+    .tabular {
+        display: table !important;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .tabular thead {
+        display: table-header-group !important;
+    }
+    
+    .tabular tbody {
+        display: table-row-group !important;
+    }
+    
+    .tabular tr {
+        display: table-row !important;
+    }
+    
+    .tabular th,
+    .tabular td {
+        display: table-cell !important;
+        padding: 10px !important;
+        vertical-align: middle !important;
+    }
+    
+    /* Header styling */
+    .tabular thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #dee2e6;
+        text-align: left;
+    }
+    
+    /* Body rows */
+    .tabular tbody tr {
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .tabular tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    /* Column widths */
+    .tabular th:nth-child(1),
+    .tabular td:nth-child(1) {
+        width: 60% !important;
+    }
+    
+    .tabular th:nth-child(2),
+    .tabular td:nth-child(2) {
+        width: 20% !important;
+        text-align: center !important;
+    }
+    
+    .tabular th:nth-child(3),
+    .tabular td:nth-child(3) {
+        width: 20% !important;
+        text-align: center !important;
+    }
+    
+    /* Input fields */
+    .tabular input[type="text"],
+    .tabular textarea {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    
+    .tabular input[type="number"] {
+        width: 80px !important;
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: center;
+    }
+    
+    /* Delete checkbox */
+    .tabular input[type="checkbox"] {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    
+    /* Hide Django's default form-row divs in tabular */
+    .tabular .form-row {
+        display: contents !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Hide labels in table cells */
+    .tabular td label {
+        display: none !important;
+    }
+    
+    /* Better spacing for add button */
+    .add-row {
+        margin-top: 15px;
+    }
+    
+    .add-row a {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #0ea5e9;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .add-row a:hover {
+        background: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+    
+    /* ============= TABS STYLING ============= */
+    
+    .nav-tabs {
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 30px;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #6b7280;
+        font-weight: 500;
+        padding: 12px 20px;
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #0ea5e9;
+        border-bottom-color: #0ea5e9;
+        background: #f8f9fa;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #0ea5e9;
+        border-bottom-color: #0ea5e9;
+        background: transparent;
+        font-weight: 600;
+    }
+    
+    /* ============= BUTTONS ============= */
+    
+    .submit-row input[type="submit"],
+    .submit-row a,
+    .submit-row button {
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s;
+    }
+    
+    /* ============= RESPONSIVE ============= */
+    
+    @media (max-width: 768px) {
+        .field-room_type,
+        .field-stars,
+        .field-from_location,
+        .field-to_location,
+        .field-date,
+        .field-time,
+        .field-airline,
+        .field-flight_number,
+        .field-day,
+        .field-icon,
+        .field-order {
+            display: block !important;
+            width: 100% !important;
+            margin-right: 0 !important;
+        }
+        
+        .field-from_location label:after,
+        .field-date label:after,
+        .field-airline label:after {
+            display: none !important;
+        }
+    }
+    
+    /* ============= FIELDSET STYLING ============= */
+    
+    fieldset.module {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    fieldset.module h2 {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        margin: -20px -20px 20px -20px;
+        border-radius: 8px 8px 0 0;
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    /* Delete form row */
+    .form-row.delete {
+        background: #fee;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}
