@@ -18,23 +18,24 @@ class Customer(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            # Create base slug from name
+            # Create unique slug for NEW customers only
             base_slug = slugify(self.name)
-            slug = base_slug
+            slug = f"{base_slug}-{get_random_string(6).lower()}"
             
-            # Check if slug already exists, add random string if needed
-            counter = 1
-            while Customer.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{get_random_string(4).lower()}"
+            # Check uniqueness, exclude self if updating
+            counter = 0
+            while Customer.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{get_random_string(6).lower()}"
                 counter += 1
-                if counter > 100:  # Increased safety limit
-                    # Fallback to a timestamp-based slug if really stuck
+                if counter > 10:  # Safety limit
                     import time
                     slug = f"{base_slug}-{int(time.time())}"
                     break
             
             self.slug = slug
+        
         super().save(*args, **kwargs)
+
     
     def __str__(self):
         return self.name
