@@ -12,13 +12,13 @@ from .models import (
 # ============= NESTED INLINES =============
 
 # Activity Details inline (nested under Itinerary)
-class ItineraryDetailInline(nested_admin.NestedStackedInline):
+class ItineraryDetailInline(nested_admin.NestedTabularInline):
     model = ItineraryDetail
     extra = 0
     can_delete = True
     
     fields = [
-        ('time','activity'),
+        'time','activity',
     ]
 
 
@@ -39,14 +39,15 @@ class ItineraryInline(nested_admin.NestedStackedInline):
 
 # ============= REGULAR INLINES =============
 
-class HotelInline(nested_admin.NestedStackedInline):
+class HotelInline(nested_admin.NestedTabularInline):
     model = Hotel
     extra = 0
     can_delete = True
     
     fields = [
         'name',
-        ('room_type', 'stars'),
+        'room_type', 
+        'stars',
         'nights',
         'image',
         'map_url',
@@ -54,21 +55,24 @@ class HotelInline(nested_admin.NestedStackedInline):
     ]
 
 
-class FlightInline(nested_admin.NestedStackedInline):
+class FlightInline(nested_admin.NestedTabularInline):
     model = Flight
     extra = 0
     can_delete = True
     
     fields = [
         'flight_type',
-        ('from_location', 'to_location'),
-        ('date', 'time'),
-        ('airline', 'flight_number'),
+        'from_location',
+        'to_location',
+        'date',
+        'time',
+        'airline',
+        'flight_number',
         'cabin',
     ]
 
 
-class VideoInline(nested_admin.NestedStackedInline):
+class VideoInline(nested_admin.NestedTabularInline):
     model = Video
     extra = 0
     max_num = 1
@@ -100,7 +104,7 @@ class PackageExclusionInline(nested_admin.NestedTabularInline):
     verbose_name_plural = "What's Not Included"
 
 
-class WhatsAppConfigInline(nested_admin.NestedStackedInline):
+class WhatsAppConfigInline(nested_admin.NestedTabularInline):
     model = WhatsAppConfig
     extra = 0
     max_num = 1
@@ -109,6 +113,8 @@ class WhatsAppConfigInline(nested_admin.NestedStackedInline):
 
 
 # ============= MAIN CUSTOMER ADMIN =============
+
+from django.db import transaction
 
 @admin.register(Customer)
 class CustomerAdmin(nested_admin.NestedModelAdmin):
@@ -138,6 +144,10 @@ class CustomerAdmin(nested_admin.NestedModelAdmin):
         PackageExclusionInline,
         WhatsAppConfigInline,
     ]
+    
+    @transaction.atomic
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
