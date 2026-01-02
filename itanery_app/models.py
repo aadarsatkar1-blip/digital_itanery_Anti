@@ -36,6 +36,9 @@ class Customer(models.Model):
         
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.name} ({self.slug})"
+
     
     def __str__(self):
         return self.name

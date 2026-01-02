@@ -121,6 +121,7 @@ class ItineraryAdmin(nested_admin.NestedModelAdmin):
     list_display = ['day', 'title', 'customer', 'get_day_detail']
     list_filter = ['customer']
     search_fields = ['title', 'description', 'customer__name']
+    autocomplete_fields = ['customer']  # ✅ Use search input instead of dropdown
     ordering = ['customer', 'day']
     inlines = [ItineraryDetailInline]
     
