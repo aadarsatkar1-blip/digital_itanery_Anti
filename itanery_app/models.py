@@ -40,9 +40,6 @@ class Customer(models.Model):
         return f"{self.name} ({self.slug})"
 
     
-    def __str__(self):
-        return self.name
-    
     class Meta:
         verbose_name = "Customer"
         verbose_name_plural = "Customers"
