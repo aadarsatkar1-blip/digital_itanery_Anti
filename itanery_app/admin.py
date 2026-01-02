@@ -139,6 +139,19 @@ class CustomerAdmin(nested_admin.NestedModelAdmin):
         WhatsAppConfigInline,
     ]
     
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related(
+            'hotels',
+            'flights',
+            'video',
+            'itinerary',
+            'itinerary__details',  # Nested prefetch for details
+            'inclusions',
+            'exclusions',
+            'whatsapp'
+        )
+
     def view_itinerary(self, obj):
         url = f"/itinerary/{obj.slug}/"
         return format_html('<a href="{}" target="_blank" style="color: #0ea5e9; font-weight: bold;">🔗 View Live</a>', url)
