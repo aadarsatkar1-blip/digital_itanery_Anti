@@ -39,15 +39,14 @@ class ItineraryInline(nested_admin.NestedStackedInline):
 
 # ============= REGULAR INLINES =============
 
-class HotelInline(nested_admin.NestedTabularInline):
+class HotelInline(nested_admin.NestedStackedInline):
     model = Hotel
     extra = 0
     can_delete = True
     
     fields = [
         'name',
-        'room_type', 
-        'stars',
+        ('room_type', 'stars'),
         'nights',
         'image',
         'map_url',
@@ -55,19 +54,16 @@ class HotelInline(nested_admin.NestedTabularInline):
     ]
 
 
-class FlightInline(nested_admin.NestedTabularInline):
+class FlightInline(nested_admin.NestedStackedInline):
     model = Flight
     extra = 0
     can_delete = True
     
     fields = [
         'flight_type',
-        'from_location',
-        'to_location',
-        'date',
-        'time',
-        'airline',
-        'flight_number',
+        ('from_location', 'to_location'),
+        ('date', 'time'),
+        ('airline', 'flight_number'),
         'cabin',
     ]
 
