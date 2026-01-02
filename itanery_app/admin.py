@@ -12,13 +12,13 @@ from .models import (
 # ============= NESTED INLINES =============
 
 # Activity Details inline (nested under Itinerary)
-class ItineraryDetailInline(nested_admin.NestedTabularInline):
+class ItineraryDetailInline(nested_admin.NestedStackedInline):
     model = ItineraryDetail
     extra = 0
     can_delete = True
     
     fields = [
-        'time','activity',
+        ('time','activity'),
     ]
 
 
