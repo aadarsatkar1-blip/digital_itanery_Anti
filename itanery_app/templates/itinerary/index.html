@@ -127,70 +127,27 @@
                     </p>
                 </div>
             </div>
-            <div
-                class="grid gap-4 {% if flight_count == 1 %}md:grid-cols-1{% elif flight_count == 2 %}md:grid-cols-2{% else %}md:grid-cols-3{% endif %}">
-                {% if data.flights.departure %}
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {% for flight in data.flights %}
                 <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Departure</span>
+                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">{{ flight.type }}</span>
                         <span
                             class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
-                            {{ data.flights.departure.cabin }}
+                            {{ flight.cabin }}
                         </span>
                     </div>
                     <div class="text-sm md:text-base font-semibold text-slate-900">
-                        {{ data.flights.departure.from }} &rarr; {{ data.flights.departure.to }}
+                        {{ flight.from }} &rarr; {{ flight.to }}
                     </div>
                     <div class="text-xs text-slate-600">
-                        {{ data.flights.departure.date }} &middot; {{ data.flights.departure.time }}
+                        {{ flight.date }} &middot; {{ flight.time }}
                     </div>
                     <div class="text-xs text-slate-500">
-                        {{ data.flights.departure.airline }} &middot; {{ data.flights.departure.flightNumber }}
+                        {{ flight.airline }} &middot; {{ flight.flightNumber }}
                     </div>
                 </div>
-                {% endif %}
-
-                {% if data.flights.flight2 %}
-                <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Flight 2</span>
-                        <span
-                            class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
-                            {{ data.flights.flight2.cabin }}
-                        </span>
-                    </div>
-                    <div class="text-sm md:text-base font-semibold text-slate-900">
-                        {{ data.flights.flight2.from }} &rarr; {{ data.flights.flight2.to }}
-                    </div>
-                    <div class="text-xs text-slate-600">
-                        {{ data.flights.flight2.date }} &middot; {{ data.flights.flight2.time }}
-                    </div>
-                    <div class="text-xs text-slate-500">
-                        {{ data.flights.flight2.airline }} &middot; {{ data.flights.flight2.flightNumber }}
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if data.flights.return %}
-                <div class="flex flex-col gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-4 shadow-sm">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs uppercase tracking-[0.15em] text-slate-500">Return</span>
-                        <span
-                            class="text-[10px] px-2 py-1 rounded-full border border-slate-200 text-slate-600 bg-slate-50">
-                            {{ data.flights.return.cabin }}
-                        </span>
-                    </div>
-                    <div class="text-sm md:text-base font-semibold text-slate-900">
-                        {{ data.flights.return.from }} &rarr; {{ data.flights.return.to }}
-                    </div>
-                    <div class="text-xs text-slate-600">
-                        {{ data.flights.return.date }} &middot; {{ data.flights.return.time }}
-                    </div>
-                    <div class="text-xs text-slate-500">
-                        {{ data.flights.return.airline }} &middot; {{ data.flights.return.flightNumber }}
-                    </div>
-                </div>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
     </section>

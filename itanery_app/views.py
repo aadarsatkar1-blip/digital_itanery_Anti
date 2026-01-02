@@ -34,9 +34,10 @@ def customer_itinerary(request, slug):
         })
     
     # Prepare flights data
-    flights = {}
+    flights = []
     for flight in customer.flights.all():
         flight_data = {
+            'type': flight.flight_type,
             'from': flight.from_location,
             'to': flight.to_location,
             'date': flight.date,
@@ -45,7 +46,7 @@ def customer_itinerary(request, slug):
             'flightNumber': flight.flight_number,
             'cabin': flight.cabin,
         }
-        flights[flight.flight_type] = flight_data
+        flights.append(flight_data)
     
     # Prepare itinerary days
     itinerary = []
