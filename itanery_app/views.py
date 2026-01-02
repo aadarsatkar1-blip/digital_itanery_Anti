@@ -37,7 +37,7 @@ def customer_itinerary(request, slug):
     flights = []
     for flight in customer.flights.all():
         flight_data = {
-            'type': flight.flight_type,
+            'type': flight.get_flight_type_display(),  # Shows "Connecting Flight" instead of "flight2"
             'from': flight.from_location,
             'to': flight.to_location,
             'date': flight.date,
