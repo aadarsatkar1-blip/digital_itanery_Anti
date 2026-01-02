@@ -370,8 +370,8 @@
 
     <!-- WhatsApp CTA (floating button) -->
     {% if data.whatsapp and data.whatsapp.phone %}
-    <a href="https://wa.me/{{ data.whatsapp.phone }}?text={{ data.whatsapp.message|urlencode }} (Client: {{ data.client.name }}, Dates: {{ data.client.dates }})"
-        target="_blank" id="whatsapp-cta"
+    <a href="https://wa.me/{{ data.whatsapp.phone }}?text={{ data.whatsapp.message|urlencode }}" target="_blank"
+        id="whatsapp-cta"
         class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition-all z-50">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path
