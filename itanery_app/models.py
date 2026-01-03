@@ -102,9 +102,21 @@ class Flight(models.Model):
 
 
 class Itinerary(models.Model):
+    ICON_CHOICES = [
+        ('📍', '📍 Location'),
+        ('🏨', '🏨 Hotel'),
+        ('🏛️', '🏛️ Monument'),
+        ('🛍️', '🛍️ Shopping'),
+        ('🌙', '🌙 Night'),
+        ('✈️', '✈️ Flight'),
+        ('🧳', '🧳 Luggage'),
+        ('🚢', '🚢 Cruise'),
+        ('🗺️', '🗺️ Map'),
+    ]
+    
     customer = models.ForeignKey(Customer, related_name='itinerary', on_delete=models.CASCADE)
     day = models.IntegerField(verbose_name="Day Number")
-    icon = models.CharField(max_length=10, default='📍', help_text="Emoji icon (e.g., 🏛️, 🕌, 🛍️)")
+    icon = models.CharField(max_length=10, choices=ICON_CHOICES, default='📍', help_text="Choose an icon for this day")
     title = models.CharField(max_length=200, verbose_name="Day Title")
     description = models.TextField(verbose_name="Day Description")
     
